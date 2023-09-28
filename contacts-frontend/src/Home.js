@@ -3,7 +3,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const token = JSON.parse(localStorage.getItem("token"));
-
 function Home(props) {
     const [show,setShow] = useState("hidden");
     const [user,setUser] = useState();
@@ -11,7 +10,7 @@ function Home(props) {
     const [email,setEmail] = useState();
     const [name,setName] = useState();
     const [phone,setPhone] = useState();
-    if(props.token !== "")
+    if(props.token !== "" && user!== undefined)
       window.location.reload(true);
     if(props.token !== "")
       localStorage.setItem("token",JSON.stringify(props.token));
@@ -24,15 +23,17 @@ function Home(props) {
                   setUser(res.data);
               })
               .catch(err=>{
-                console.log(err.response.data.message);
+                alert(err.response.data.message);
+                document.getElementById("login").click();
               });
       axios.get(`http://localhost:3000/api/contacts`)
       .then(res => {
-          setContacts(res.data);
-      })
+        setContacts(res.data);
+        })
       .catch(err=>{
         console.log(err.response.data.message);
-      });}
+        });
+      }
       },[]);
 
       const contactSet = contacts.map((item) => {
@@ -94,7 +95,7 @@ return(
        </div>
        <div>
        <Link to="/login" className='hover:text-blue-600'>
-        <button className="border-2 border-black px-2 hover:text-blue-600">Logout</button></Link>
+        <button className="border-2 border-black px-2 hover:text-blue-600" id="login" >Logout</button></Link>
        <h2 className='text-2xl font-bold pt-4'>Create Contact</h2>
        <input className="border-2 border-black px-2 mt-4" type="text" onChange={(e)=>setName(e.target.value)} placeholder="Name"/><br />
   <input className="border-2 border-black px-2 my-2" type="text" onChange={(e)=>setEmail(e.target.value)} placeholder="Email"/><br />
